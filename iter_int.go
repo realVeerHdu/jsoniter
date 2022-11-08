@@ -238,7 +238,13 @@ func (iter *Iterator) ReadInt64() (ret int64) {
 
 // ReadUint64 read uint64
 func (iter *Iterator) ReadUint64() uint64 {
-	return iter.readUint64(iter.nextToken())
+	c := iter.nextToken()
+	if c == '"' {
+		ret := iter.readUint64(iter.readByte())
+		iter.readByte()
+		return ret
+	}
+	return iter.readUint64(c)
 }
 
 func (iter *Iterator) readUint64(c byte) (ret uint64) {
